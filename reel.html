@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><title>reel</title>
+<style>html,body{margin:0;background:#000}#stage{width:1080px;height:1920px;position:relative;overflow:hidden}
+#sub{position:absolute;left:60px;right:60px;bottom:240px;text-align:center;font:900 76px/1.2 'Arial Black',Arial,sans-serif;color:#fff;-webkit-text-stroke:14px #16131C;paint-order:stroke fill}
+#sub .on{color:#FFD25A}</style></head><body><div id="stage"><svg id="w" width="1080" height="1920" viewBox="0 0 1080 1920"></svg><div id="sub"></div></div>
+<script src="characters.js"></script>
+<script>
+// Every value is a pure function of t. window.R(t) draws one frame (used by render.py).
+let SC=null,WD=[];
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,cl=x=>Math.max(0,Math.min(1,x));
+function drawScene(s,t){const p=ease(cl((t-s.t0)/(s.t1-s.t0)));const z=s.cam.zoom[0]+(s.cam.zoom[1]-s.cam.zoom[0])*p,[fx,fy]=s.cam.focus;
+ let g=WFIELD(1080,1920,{light:s.light||0,hz:.5,px:t*40});
+ (s.props||[]).forEach(o=>{if(o.type=='mgun')g+=MGUN(o.x,o.y,o.s||1.5,-6,o.fire?(Math.sin(t*40)>0?1:0):0)});
+ (s.chars||[]).forEach(c=>{if(c.type=='emus'){for(let k=0;k<(c.n||5);k++){const xx=c.run?((k*230+t*420)%1500)-200:120+k*190;g+=EMU(xx,1180+(k%3)*120,.95+(k%2)*.15,{ph:t*12+k,run:c.run?1:0,blink:Math.sin(t*2.7+k)>.97})}}
+  else{const up=c.arms=='up';g+=TOON(c.x,c.y,c.size||64,{out:c.type,mood:c.mood,gun:c.gun,al:up?155:(c.al||14),ar:up?155:(c.ar||14),blink:Math.sin(t*2.3+c.x)>.97,flip:c.flip})}});
+ return `<g transform="translate(${540-fx*z} ${960-fy*z}) scale(${z}) translate(0 0)">${g}</g>`.replace(`translate(${540-fx*z} ${960-fy*z})`,`translate(${fx-fx*z} ${fy-fy*z})`)}
+window.R=t=>{const s=SC.scenes.find(s=>t>=s.t0&&t<s.t1)||SC.scenes[SC.scenes.length-1];document.getElementById('w').innerHTML=drawScene(s,t);
+ // subtitle: show the current line of up to 4 words, current word yellow
+ let i=WD.findIndex((w,k)=>t>=w[1]&&(k==WD.length-1||t<WD[k+1][1]));if(i<0){document.getElementById('sub').innerHTML='';return}
+ const a=Math.floor(i/4)*4;document.getElementById('sub').innerHTML=WD.slice(a,a+4).map((w,k)=>`<span class="${a+k==i?'on':''}">${w[0]}</span>`).join(' ')};
+window.LOAD=async()=>{SC=await (await fetch('scenes.json')).json();WD=await (await fetch('words.json')).json();R(0);return true};
+</script></body></html>

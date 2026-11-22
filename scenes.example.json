@@ -1,0 +1,9 @@
+{"size":[1080,1920],"fps":30,
+ "scenes":[
+  {"t0":0,"t1":3.5,"world":"field","light":0,"cam":{"zoom":[1.0,1.08],"focus":[540,1300]},
+   "chars":[{"type":"soldier","x":380,"y":1540,"size":64,"mood":"angry","gun":true}],"props":[{"type":"mgun","x":640,"y":1330,"s":1.5}]},
+  {"t0":3.5,"t1":7,"world":"field","light":0.1,"cam":{"zoom":[1.05,1.0],"focus":[540,1250]},
+   "chars":[{"type":"emus","n":5,"run":true},{"type":"soldier","x":560,"y":1650,"size":74,"mood":"shock","arms":"up"}]},
+  {"t0":7,"t1":10,"world":"field","light":0.85,"cam":{"zoom":[1.0,1.1],"focus":[540,1400]},
+   "chars":[{"type":"emus","n":6,"run":false},{"type":"soldier","x":560,"y":1650,"size":74,"mood":"shock","arms":"up"}]}
+ ]}
